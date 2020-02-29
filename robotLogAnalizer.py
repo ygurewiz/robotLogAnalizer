@@ -7,6 +7,7 @@ import sys
 import csv
 import os
 import pandas as pd
+from robotLogKeyWords import rDirection
 
 def robotLogAnalizer(argv):
 
@@ -30,11 +31,22 @@ def robotLogAnalizer(argv):
 
     lines = rFile.readlines()
     DirectionList = list()
+
+    robotLineAnalizer(lines,DirectionList,outputFile)
+
+    outputFile.write("\n\nPath:\n")
+    for d in DirectionList:
+        outputFile.write(str(d).strip()+'\n')
+    rFile.close()
+    outputFile.close()
+
+def robotLineAnalizer(lines,DirectionList,outputFile):
     i=0
     currentDirection = ""
     reverse = False
     for line in lines:
         i+=1
+        timeStamp = getTimeStamp(line,i)
         outLine = robotLogLineAnalizer(line,i)
         if(not outLine == ""):
             outputFile.write(str(i)+' '+outLine)
@@ -51,15 +63,13 @@ def robotLogAnalizer(argv):
             if(distance):
                 if(reverse):
                     reverse=False
-                    go = " Reverse: "
+                    go = 'R'
                 else:
-                    go = " Forward: "
-                DirectionList.insert(-1,str(i) + go+" current direction: "+currentDirection+" Left Encoder: " + distance[0] + " Right Encoder: " + distance[1])
-    outputFile.write("\n\nPath:\n")
-    for d in DirectionList:
-        outputFile.write(d.strip()+'\n')
-    rFile.close()
-    outputFile.close()
+                    go = 'F'
+                RDirection = rDirection(timeStamp,go,currentDirection,float(distance[0])/10,float(distance[1])/10)
+                DirectionList.insert(-1,RDirection)
+                #DirectionList.insert(-1,str(i) + go+" current direction: "+currentDirection+" Left Encoder: " + distance[0] + " Right Encoder: " + distance[1])
+    
 
 def getRobotHDirection(line,i):
     for key in robotLogKeyWords.HorizontalDirection:
@@ -77,12 +87,15 @@ def getRobotDistanceTraveled(line,i):
     return dis
 
 def robotLogLineAnalizer(line,i):
-    #parsed_line = getTimeStamp(line,i)
     for key in robotLogKeyWords.KeyWords:
         if(not str.find(line,key)==-1):
             return line
     for key in robotLogKeyWords.HorizontalDirection:
         if(not str.find(line,key)==-1):
+            return line
+    for key in robotLogKeyWords.Rotation:
+        if(not str.find(line,key)==-1):
+            print(line)
             return line
     return ""
 

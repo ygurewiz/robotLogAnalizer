@@ -3,6 +3,13 @@ import string
 from collections import namedtuple
 
 HorizontalDirection = ["WEST","EAST", "NORTH", "SOUTH"]
+
+Rotation = ["LOG_LOCATION_INIT_ON_START_MOVEMENT",
+            "LOG_MOVEMENT_ROTATION_MOVEMENT",
+            "LOG_MOVEMENT_TURN_IS_FINISHED",
+            "LOG_MOVEMENT_TURN_MOVEMENT_START",
+            "LOG_GENERAL_DATA"]
+
 KeyWords = ["LOG_STEP_START",
             "LOG_STEP_END",
             "LOG_PROCEDURE_START",
@@ -50,10 +57,20 @@ KeyWords = ["LOG_STEP_START",
             "LOG_MOVEMENT_TURN_MOVEMENT_START",
             "LOG_MOVEMENT_TURN_MOVEMENT_END",
             "LOG_ROBOT_MANAGER_HANDLE_EVENT_CHANGE_STATE"]
+class rDirection:
+    """description of class"""
+    def __init__(self, time,ForwardReverse,direction,dLeft,dRight):
+        self.timeStamp = time
+        self.go = ForwardReverse
+        self.currentDirection = direction
+        self.leftEncoderDistance = dLeft
+        self.rightEncoderDistance = dRight
 
-#class rDirection:
-#    """description of class"""
-#    timeStamp = datetime.date(2,11,1978)
-#    HDirection = HorizontalDirection("none")
-
+class rRotation:
+    """description of class"""
+    def __init__(self, time,dType,FDirection,TDirection, dLeft,dRight):
+        self.timeStamp = time
+        self.directionType = dType
+        self.fromDirection = FDirection
+        self.toDirection = TDirection
 
